@@ -1,0 +1,10 @@
+INSERT INTO branch_dim VALUES ('l100', 'Malad_branch', 'Malad', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l101', 'Mulund_branch', 'Mulund', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l102', 'Sion_branch', 'Sion', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l103', 'Dombivali_branch', 'Dombivali', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l104', 'Andheri_branch', 'Andheri', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l105', 'CST_branch', 'CST', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l106', 'NAHUR_branch', 'NAHUR', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l107', 'Kanjur_branch', 'Kanjur', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l108', 'Kapurbawdi_branch', 'Kapurbawdi', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l109', 'Chikoowadi_branch', 'Chikoowadi', 'Mumbai');

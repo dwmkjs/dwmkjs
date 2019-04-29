@@ -1,0 +1,356 @@
+Experiment 1 : Library Management System
+
+Create Statements:
+
+create table time_dim (tkey varchar(50) PRIMARY KEY,year int, month varchar(50), week int, day int, hour int);
+
+create table book_dim (bkey varchar(50) PRIMARY KEY,bname varchar(50), author varchar(50), genre varchar(50) , barcode varchar(50));
+
+create table student_dim (skey varchar(50) PRIMARY KEY,sname varchar(50), age int,gender varchar(50),year int);
+
+create table branch_dim (lkey varchar(50) PRIMARY KEY,bname varchar(50), location varchar (50), city varchar(50));
+
+create table fact (tkey varchar(50) FOREIGN KEY REFERENCES time_dim (tkey),bkey varchar(50) FOREIGN KEY REFERENCES book_dim (bkey),skey varchar(50) FOREIGN KEY REFERENCES student_dim (skey), lkey varchar(50)FOREIGN KEY REFERENCES branch_dim (lkey));
+
+
+
+Insert Statements:
+
+Book dimension
+MariaDB [library]> select * from book_dim;                                                                              +------+-------------------------------------+---------------------------+-----------+                                  | bkey | bname                               | author                    | genre     |                                  +------+-------------------------------------+---------------------------+-----------+                                  | b100 | Harry Potter Socerrors stone        | J.K.Rowling               | Fiction   |                                  | b101 | Harry Potter Chamber Of Secrets     | J.K.Rowling               | Fiction   |                                  | b102 | Harry Potter Prisoner Of Askaban    | J.K.Rowling               | Fiction   |                                  | b103 | Harry Potter Half Blooded Prince    | J.K.Rowling               | Fiction   |                                  | b104 | Harry Potter Deathly Hallows Part 1 | J.K.Rowling               | Fiction   |                                  | b105 | Harry Potter Deathly Hallows Part 2 | J.K.Rowling               | Fiction   |                                  | b106 | Chemistry                           | Lakhmir Singh Manjit Kaur | Text book |                                  | b107 | Biology                             | Lakhmir Singh Manjit Kaur | Text book |                                  | b108 | Physics                             | Ravi Parchure             | Text Book |                                  | b109 | Scooby Doo                          | Jesse Leon McCann         | Fiction   |                                  +------+-------------------------------------+---------------------------+-----------+  
+
+
+
+
+
+Branch dimension
+MariaDB [library]> select * from branch_dim;                                                                            +------+-------------------+------------+--------+                                                                      | lkey | brname            | location   | city   |                                                                      +------+-------------------+------------+--------+                                                                      | l100 | Malad_branch      | Malad      | Mumbai |                                                                      | l101 | Mulund_branch     | Mulund     | Mumbai |                                                                      | l102 | Sion_branch       | Sion       | Mumbai |                                                                      | l103 | Dombivali_branch  | Dombivali  | Mumbai |                                                                      | l104 | Andheri_branch    | Andheri    | Mumbai |                                                                      | l105 | CST_branch        | CST        | Mumbai |                                                                      | l106 | NAHUR_branch      | NAHUR      | Mumbai |                                                                      | l107 | Kanjur_branch     | Kanjur     | Mumbai |                                                                      | l108 | Kapurbawdi_branch | Kapurbawdi | Mumbai |                                                                      | l109 | Chikoowadi_branch | Chikoowadi | Mumbai |                                                                      +------+-------------------+------------+--------+                                                                      10 
+
+Student dimension
+MariaDB [library]> select * from student_dim;
++------+------------+------+--------+------+
+| skey | sname      | age  | gender | year |
++------+------------+------+--------+------+
+| s100 | Meet Doshi |   20 | Male   |    3 |
+| s101 | Manuel     |   22 | Male   |    3 |
+| s102 | Hoyt       |   25 | FeMale |    2 |
+| s103 | Trace      |   30 | Male   |    1 |
+| s104 | Connor     |   31 | FeMale |    3 |
+| s105 | Caden      |   23 | Male   |    4 |
+| s106 | Buck       |   12 | Male   |    2 |
+| s107 | Linwood    |   35 | FeMale |    3 |
+| s108 | Fredy      |   46 | Male   |    3 |
+| s109 | Dhairya    |   36 | Male   |    3 |
++------+------------+------+--------+------+
+10 rows in set (0.00 sec)
+
+Time_dimension
+MariaDB [library]> select * from time_dim;
++------+------+-------+------+------+
+| tkey | year | month | week | day  |
++------+------+-------+------+------+
+| t100 | 2012 | Dec   |    1 |    1 |
+| t101 | 2016 | Jan   |    4 |   12 |
+| t102 | 2017 | Mar   |    3 |   14 |
+| t103 | 2012 | Apr   |    2 |   13 |
+| t104 | 2014 | Jun   |    2 |   21 |
+| t105 | 2017 | Jul   |    1 |   22 |
+| t106 | 2018 | Aug   |    4 |   12 |
+| t107 | 2012 | Sep   |    3 |    1 |
+| t108 | 2016 | Jan   |    1 |    6 |
+| t109 | 2013 | Dec   |    1 |    5 |
++------+------+-------+------+------+
+10 rows in set (0.00 sec)
+
+Fact
+MariaDB [library]> select * from fact;
++------+------+------+------+-----------+
+| tkey | bkey | skey | lkey | unit_sold |
++------+------+------+------+-----------+
+| t100 | b100 | s100 | l100 |         10 |
+| t101 | b101 | s101 | l101 |         12 |
+| t102 | b102 | s102 | l102 |         20 |
+| t103 | b103 | s103 | l103 |         18 |
+| t104 | b104 | s104 | l104 |         8 |
+| t105 | b105 | s105 | l105 |         6 |
+| t106 | b106 | s106 | l106 |         18 |
+| t107 | b107 | s107 | l107 |         17 |
+| t108 | b108 | s108 | l108 |         5 |
+| t109 | b109 | s109 | l109 |         5 |
++------+------+------+------+-----------+
+Queries:
+To count the unit_sold made by a each book.
+MariaDB [library]> select bkey,count(unit_sold) from fact group by bkey limit 25;
++------+------------------+
+| bkey | count(unit_sold) |
++------+------------------+
+| b100 |                10 |
+| b101 |                12 |
+| b102 |                20 |
+| b103 |                18 |
+| b104 |                8 |
+| b105 |                6 |
+| b106 |                18 |
+| b107 |                17 |
+| b108 |                5 |
+| b109 |                5 |
++------+------------------+
+10 rows in set (0.00 sec)
+To count the unit_sold for branch n book.
+MariaDB [library]> select lkey,bkey,count(unit_sold) from fact group by lkey limit 25;
++------+------+------------------+
+| lkey | bkey | count(unit_sold) |
++------+------+------------------+
+| l100 | b100 |                10 |
+| l101 | b101 |                12 |
+| l102 | b102 |                20 |
+| l103 | b103 |                18 |
+| l104 | b104 |                8 |
+| l105 | b105 |                6 |
+| l106 | b106 |                18 |
+| l107 | b107 |                17 |
+| l108 | b108 |                5 |
+| l109 | b109 |                5 |
++------+------+------------------+
+10 rows in set (0.00 sec)
+Highest No of book sold
+MariaDB [library]> select bkey,max(unit_sold) from fact;
++------+----------------+
+| bkey | max(unit_sold) |
++------+----------------+
+| b102 |              20 |
++------+----------------+
+1 row in set (0.00 sec)
+
+Lowest number of book sold
+MariaDB [library]> select bkey,min(unit_sold) from fact;
++------+----------------+
+| bkey | min(unit_sold) |
++------+----------------+
+| b108 |              8 |
++------+----------------+
+1 row in set (0.00 sec)
+
+
+Experiment 1 : Library Management System
+
+Create Statements:
+
+create table time_dim (tkey varchar(50) PRIMARY KEY,year int, month varchar(50), week int, day int, hour int);
+
+create table book_dim (bkey varchar(50) PRIMARY KEY,bname varchar(50), author varchar(50), genre varchar(50) , barcode varchar(50));
+
+create table student_dim (skey varchar(50) PRIMARY KEY,sname varchar(50), age int,gender varchar(50),year int);
+
+create table branch_dim (lkey varchar(50) PRIMARY KEY,bname varchar(50), location varchar (50), city varchar(50));
+
+create table fact (tkey varchar(50) FOREIGN KEY REFERENCES time_dim (tkey),bkey varchar(50) FOREIGN KEY REFERENCES book_dim (bkey),skey varchar(50) FOREIGN KEY REFERENCES student_dim (skey), lkey varchar(50)FOREIGN KEY REFERENCES branch_dim (lkey));
+
+
+
+Insert Statements:
+
+Book dimension
+MariaDB [library]> select * from book_dim;                                                                              +------+-------------------------------------+---------------------------+-----------+                                  | bkey | bname                               | author                    | genre     |                                  +------+-------------------------------------+---------------------------+-----------+                                  | b100 | Harry Potter Socerrors stone        | J.K.Rowling               | Fiction   |                                  | b101 | Harry Potter Chamber Of Secrets     | J.K.Rowling               | Fiction   |                                  | b102 | Harry Potter Prisoner Of Askaban    | J.K.Rowling               | Fiction   |                                  | b103 | Harry Potter Half Blooded Prince    | J.K.Rowling               | Fiction   |                                  | b104 | Harry Potter Deathly Hallows Part 1 | J.K.Rowling               | Fiction   |                                  | b105 | Harry Potter Deathly Hallows Part 2 | J.K.Rowling               | Fiction   |                                  | b106 | Chemistry                           | Lakhmir Singh Manjit Kaur | Text book |                                  | b107 | Biology                             | Lakhmir Singh Manjit Kaur | Text book |                                  | b108 | Physics                             | Ravi Parchure             | Text Book |                                  | b109 | Scooby Doo                          | Jesse Leon McCann         | Fiction   |                                  +------+-------------------------------------+---------------------------+-----------+  
+
+
+
+
+
+Branch dimension
+MariaDB [library]> select * from branch_dim;                                                                            +------+-------------------+------------+--------+                                                                      | lkey | brname            | location   | city   |                                                                      +------+-------------------+------------+--------+                                                                      | l100 | Malad_branch      | Malad      | Mumbai |                                                                      | l101 | Mulund_branch     | Mulund     | Mumbai |                                                                      | l102 | Sion_branch       | Sion       | Mumbai |                                                                      | l103 | Dombivali_branch  | Dombivali  | Mumbai |                                                                      | l104 | Andheri_branch    | Andheri    | Mumbai |                                                                      | l105 | CST_branch        | CST        | Mumbai |                                                                      | l106 | NAHUR_branch      | NAHUR      | Mumbai |                                                                      | l107 | Kanjur_branch     | Kanjur     | Mumbai |                                                                      | l108 | Kapurbawdi_branch | Kapurbawdi | Mumbai |                                                                      | l109 | Chikoowadi_branch | Chikoowadi | Mumbai |                                                                      +------+-------------------+------------+--------+                                                                      10 
+
+Student dimension
+MariaDB [library]> select * from student_dim;
++------+------------+------+--------+------+
+| skey | sname      | age  | gender | year |
++------+------------+------+--------+------+
+| s100 | Meet Doshi |   20 | Male   |    3 |
+| s101 | Manuel     |   22 | Male   |    3 |
+| s102 | Hoyt       |   25 | FeMale |    2 |
+| s103 | Trace      |   30 | Male   |    1 |
+| s104 | Connor     |   31 | FeMale |    3 |
+| s105 | Caden      |   23 | Male   |    4 |
+| s106 | Buck       |   12 | Male   |    2 |
+| s107 | Linwood    |   35 | FeMale |    3 |
+| s108 | Fredy      |   46 | Male   |    3 |
+| s109 | Dhairya    |   36 | Male   |    3 |
++------+------------+------+--------+------+
+10 rows in set (0.00 sec)
+
+Time_dimension
+MariaDB [library]> select * from time_dim;
++------+------+-------+------+------+
+| tkey | year | month | week | day  |
++------+------+-------+------+------+
+| t100 | 2012 | Dec   |    1 |    1 |
+| t101 | 2016 | Jan   |    4 |   12 |
+| t102 | 2017 | Mar   |    3 |   14 |
+| t103 | 2012 | Apr   |    2 |   13 |
+| t104 | 2014 | Jun   |    2 |   21 |
+| t105 | 2017 | Jul   |    1 |   22 |
+| t106 | 2018 | Aug   |    4 |   12 |
+| t107 | 2012 | Sep   |    3 |    1 |
+| t108 | 2016 | Jan   |    1 |    6 |
+| t109 | 2013 | Dec   |    1 |    5 |
++------+------+-------+------+------+
+10 rows in set (0.00 sec)
+
+Fact
+MariaDB [library]> select * from fact;
++------+------+------+------+-----------+
+| tkey | bkey | skey | lkey | unit_sold |
++------+------+------+------+-----------+
+| t100 | b100 | s100 | l100 |         10 |
+| t101 | b101 | s101 | l101 |         12 |
+| t102 | b102 | s102 | l102 |         20 |
+| t103 | b103 | s103 | l103 |         18 |
+| t104 | b104 | s104 | l104 |         8 |
+| t105 | b105 | s105 | l105 |         6 |
+| t106 | b106 | s106 | l106 |         18 |
+| t107 | b107 | s107 | l107 |         17 |
+| t108 | b108 | s108 | l108 |         5 |
+| t109 | b109 | s109 | l109 |         5 |
++------+------+------+------+-----------+
+Queries:
+To count the unit_sold made by a each book.
+MariaDB [library]> select bkey,count(unit_sold) from fact group by bkey limit 25;
++------+------------------+
+| bkey | count(unit_sold) |
++------+------------------+
+| b100 |                10 |
+| b101 |                12 |
+| b102 |                20 |
+| b103 |                18 |
+| b104 |                8 |
+| b105 |                6 |
+| b106 |                18 |
+| b107 |                17 |
+| b108 |                5 |
+| b109 |                5 |
++------+------------------+
+10 rows in set (0.00 sec)
+To count the unit_sold for branch n book.
+MariaDB [library]> select lkey,bkey,count(unit_sold) from fact group by lkey limit 25;
++------+------+------------------+
+| lkey | bkey | count(unit_sold) |
++------+------+------------------+
+| l100 | b100 |                10 |
+| l101 | b101 |                12 |
+| l102 | b102 |                20 |
+| l103 | b103 |                18 |
+| l104 | b104 |                8 |
+| l105 | b105 |                6 |
+| l106 | b106 |                18 |
+| l107 | b107 |                17 |
+| l108 | b108 |                5 |
+| l109 | b109 |                5 |
++------+------+------------------+
+10 rows in set (0.00 sec)
+Highest No of book sold
+MariaDB [library]> select bkey,max(unit_sold) from fact;
++------+----------------+
+| bkey | max(unit_sold) |
++------+----------------+
+| b102 |              20 |
++------+----------------+
+1 row in set (0.00 sec)
+
+Lowest number of book sold
+MariaDB [library]> select bkey,min(unit_sold) from fact;
++------+----------------+
+| bkey | min(unit_sold) |
++------+----------------+
+| b108 |              8 |
++------+----------------+
+1 row in set (0.00 sec)
+
+
+
+
+INSERT INTO QUERIES:
+ book:
+INSERT INTO book_dim VALUES ('b100', 'Harry Potter Socerrors stone', 'J.K.Rowling', 'Fiction' );
+INSERT INTO book_dim VALUES ('b101', 'Harry Potter Chamber Of Secrets', 'J.K.Rowling', 'Fiction' );
+INSERT INTO book_dim VALUES ('b102', 'Harry Potter Prisoner Of Askaban', 'J.K.Rowling', 'Fiction' );
+INSERT INTO book_dim VALUES ('b103', 'Harry Potter Half Blooded Prince', 'J.K.Rowling', 'Fiction' );
+INSERT INTO book_dim VALUES ('b104', 'Harry Potter Deathly Hallows Part 1', 'J.K.Rowling', 'Fiction' );
+INSERT INTO book_dim VALUES ('b105', 'Harry Potter Deathly Hallows Part 2', 'J.K.Rowling', 'Fiction' );
+INSERT INTO book_dim VALUES ('b106', 'Chemistry', 'Lakhmir Singh Manjit Kaur', 'Text book' );
+INSERT INTO book_dim VALUES ('b107', 'Biology', 'Lakhmir Singh Manjit Kaur', 'Text book' );
+INSERT INTO book_dim VALUES ('b108', 'Physics', 'Ravi Parchure', 'Text Book' );
+INSERT INTO book_dim VALUES ('b109', 'Scooby Doo', 'Jesse Leon McCann', 'Fiction' );
+
+FACT TABLE:
+
+create table fact (tkey varchar(50),bkey varchar(50),skey varchar(50), lkey varchar(50), unit_sold int);
+alter table fact add foreign key (tkey) REFERENCES time_dim(tkey);
+alter table fact add foreign key (bkey) REFERENCES book_dim(bkey);
+alter table fact add foreign key (skey) REFERENCES student_dim(skey);
+alter table fact add foreign key (lkey) REFERENCES branch_dim(lkey);
+
+INSERT INTO fact VALUES ('t109', 'b101', 's101', 'l102',10);
+INSERT INTO fact VALUES ('t108', 'b102', 's103', 'l103',11);
+INSERT INTO fact VALUES ('t102', 'b102', 's105', 'l101',30);
+INSERT INTO fact VALUES ('t105', 'b103', 's106', 'l105',20);
+INSERT INTO fact VALUES ('t104', 'b101', 's108', 'l106',60);
+INSERT INTO fact VALUES ('t103', 'b105', 's109', 'l108',40);
+INSERT INTO fact VALUES ('t102', 'b106', 's101', 'l104',70);
+INSERT INTO fact VALUES ('t108', 'b107', 's102', 'l101',30);
+INSERT INTO fact VALUES ('t106', 'b106', 's102', 'l109',20);
+INSERT INTO fact VALUES ('t105', 'b108', 's106', 'l108',60);
+INSERT INTO fact VALUES ('t107', 'b109', 's107', 'l101',20);
+
+INSERT INTO branch_dim VALUES ('l100', 'Malad_branch', 'Malad', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l101', 'Mulund_branch', 'Mulund', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l102', 'Sion_branch', 'Sion', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l103', 'Dombivali_branch', 'Dombivali', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l104', 'Andheri_branch', 'Andheri', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l105', 'CST_branch', 'CST', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l106', 'NAHUR_branch', 'NAHUR', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l107', 'Kanjur_branch', 'Kanjur', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l108', 'Kapurbawdi_branch', 'Kapurbawdi', 'Mumbai');
+INSERT INTO branch_dim VALUES ('l109', 'Chikoowadi_branch', 'Chikoowadi', 'Mumbai');
+
+
+INSERT INTO time_dim VALUES ('t100', 'Malad_branch', 'Malad', 'Mumbai');
+INSERT INTO time_dim VALUES ('t101', 'Mulund_branch', 'Mulund', 'Mumbai');
+INSERT INTO time_dim VALUES ('t102', 'Sion_branch', 'Sion', 'Mumbai');
+INSERT INTO time_dim VALUES ('t103', 'Dombivali_branch', 'Dombivali', 'Mumbai');
+INSERT INTO time_dim VALUES ('t104', 'Andheri_branch', 'Andheri', 'Mumbai');
+INSERT INTO time_dim VALUES ('t105', 'CST_branch', 'CST', 'Mumbai');
+INSERT INTO time_dim VALUES ('t106', 'NAHUR_branch', 'NAHUR', 'Mumbai');
+INSERT INTO time_dim VALUES ('t107', 'Kanjur_branch', 'Kanjur', 'Mumbai');
+INSERT INTO time_dim VALUES ('t108', 'Kapurbawdi_branch', 'Kapurbawdi', 'Mumbai');
+INSERT INTO time_dim VALUES ('t109', 'Chikoowadi_branch', 'Chikoowadi', 'Mumbai');
+
+/*************************** Student Insertions  ******************************/
+
+create table student_dim (skey varchar(50) PRIMARY KEY,sname varchar(50), age int,gender varchar(50),year int);
+
+INSERT INTO student_dim VALUES ('s100', 'Meet Doshi', 20, 'Male', 3 );
+INSERT INTO student_dim VALUES ('s101', 'Manuel', 22, 'Male', 3 );
+INSERT INTO student_dim VALUES ('s102', 'Hoyt', 25, 'FeMale', 2 );
+INSERT INTO student_dim VALUES ('s103', 'Trace', 30, 'Male', 1 );
+INSERT INTO student_dim VALUES ('s104', 'Connor', 31, 'FeMale', 3 );
+INSERT INTO student_dim VALUES ('s105', 'Caden', 23, 'Male', 4 );
+INSERT INTO student_dim VALUES ('s106', 'Buck', 12, 'Male', 2 );
+INSERT INTO student_dim VALUES ('s107', 'Linwood', 35, 'FeMale', 3 );
+INSERT INTO student_dim VALUES ('s108', 'Fredy', 46, 'Male', 3 );
+INSERT INTO student_dim VALUES ('s109', 'Dhairya', 36, 'Male', 3 );
+
+
+/*************************** Time Insertions  ******************************/
+
+create table time_dim (tkey varchar(50) PRIMARY KEY,year int, month varchar(50), week int, day int );
+
+INSERT INTO time_dim VALUES ('t100', 2012, 'Dec', 1, 01);
+INSERT INTO time_dim VALUES ('t101', 2016, 'Jan', 4, 12);
+INSERT INTO time_dim VALUES ('t102', 2017, 'Mar', 3, 14);
+INSERT INTO time_dim VALUES ('t103', 2012, 'Apr', 2, 13);
+INSERT INTO time_dim VALUES ('t104', 2014, 'Jun', 2, 21);
+INSERT INTO time_dim VALUES ('t105', 2017, 'Jul', 1, 22);
+INSERT INTO time_dim VALUES ('t106', 2018, 'Aug', 4, 12);
+INSERT INTO time_dim VALUES ('t107', 2012, 'Sep', 3, 01);
+INSERT INTO time_dim VALUES ('t108', 2016, 'Jan', 1, 06);
+INSERT INTO time_dim VALUES ('t109', 2013, 'Dec', 1, 05);
