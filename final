@@ -1,0 +1,572 @@
+KMEANS(PY):
+
+import math
+
+print("\n")
+print("let first column be its name of your data.(include in number of column)")
+num_column_data=input("enter number of columns in your dataset:")
+num_rows_data=input("enter number of rows(tuples) in your dataset:")
+data=[]
+for i in range(0,num_rows_data):
+	data.append([])
+	for j in range(0,num_column_data+1):
+		data[i].append([])
+		if j==0:
+			data[i][j]=raw_input("Enter name of your data of "+str(i+1)+"tuples:")
+		else:
+			data[i][j]=input("Enter data at "+str(j)+":")
+k=input("enter k (number of custers) :")
+
+if num_column_data==0 or num_rows_data==0:
+	data=[["d1",185,72],["d2",170,56],["d3",168,60],["d4",179,68],["d5",182,72],["d6",188,77],["d7",180,71],["d8",180,70],["d9",183,84],["d10",180,88],["d11",180,88],["d12",180,67],["d13",177,76]]
+
+def euclideanDistance(array,mean):
+	sosquare=0
+	for i in range(1,len(array)):
+		sosquare=sosquare+((array[i]-mean[1][i])**2)
+	return [mean[0],math.sqrt(sosquare)]
+
+
+def minimum(array):
+	if len(array)>1:
+		pos=array[0][0]
+		min=array[0][1]
+		for i in range(1,len(array)):
+			if array[i][1]<min:
+				pos=array[i][0]
+				min=array[i][1]
+		return [pos,min]
+	else:
+		return array[0]
+
+
+def initmean(data,k):
+	marray=[]
+	for i in range(0,k):
+		marray.append([i,data[i]])
+	return marray
+
+
+def updateCentoid(cen,pos,data):
+	newcen=[float(0) for i in range(len(data))]
+	for i in range(1,len(data)):
+		newcen[i]=(cen[pos][1][i]+float(data[i]))/2
+	return newcen
+			
+
+def kmean(data,k):
+	array=[]
+	centroid=initmean(data,k)
+	oldcentoid=[]
+	j=0
+	while oldcentoid!=centroid:	
+		j=j+1
+		oldcentoid=centroid[:]
+		cluster=[]  
+		for l in range(0,k):
+			cluster.append([])
+
+		for i in range(len(data)):
+			eu_dis=[]	
+			for l in range(0,k):
+				eu_dis.append(euclideanDistance(data[i],centroid[l]))
+			centroid[minimum(eu_dis)[0]]=[minimum(eu_dis)[0],updateCentoid(centroid,minimum(eu_dis)[0],data[i])]			
+			cluster[minimum(eu_dis)[0]].append(data[i])
+	for i in range(0,k):
+		print(str(i+1)+" cluster is "+str(cluster[i]))
+
+
+kmean(data,k)
+
+
+Linear REGREASSION (RAJ):
+ # pip install numpy
+
+import statistics  as st
+import numpy as np
+
+input_x=[]
+input_y=[]
+n=input("enter number of elements:")
+for i in range(0,n):
+	input_x.append(input("enter x:"))
+	input_y.append(input("enter y:"))
+x=np.array(input_x, dtype =np.float64)
+y=np.array(input_y, dtype =np.float64)
+xy=[]
+x_square=[]
+x_mean=st.mean(x)
+y_mean=st.mean(y)
+xy_mean=st.mean(x*y)
+x_square_mean=st.mean(x**2)
+best_m=(x_mean*y_mean - xy_mean)/(x_mean**2-x_square_mean)
+best_c=y_mean-x_mean*best_m
+predict_x=input("enter x for prediction:");
+predict_y=best_m*predict_x+best_c
+print predict_y
+
+# Output:
+
+# comp@comp-ThinkCentre-M720t:~/Desktop$ python linear.py
+# enter number of elements:5
+# enter x:1
+# enter y:5
+# enter x:2
+# enter y:4
+# enter x:3
+# enter y:6
+# enter x:4
+# enter y:5
+# enter x:5
+# enter y:6
+# enter x for prediction:1
+# 4.600000000000002
+
+LINEAR REGRESSION (OWN):
+
+#include<stdio.h>
+#include<math.h>
+void main()
+{
+ int n,I;
+ float sumx, sumxsq, sumy, sumxy, x, y, a0, a1, denom;
+ printf("enter the n value");
+ scanf("%d", &n);
+ sumx = 0;
+ sumxsq = 0;
+ sumy = 0;
+ sumxy = 0;
+ for(int i=0; i<n; i++)
+ {
+  scanf("%f %f", &x, &y);
+  sumx += x;
+  sumxsq += pow(x, 2);
+  sumy += y;
+  sumxy += x * y;
+ }
+ denom = n*sumxsq-pow(sumx, 2);
+ a0 = (sumy*sumxsq-sumx*sumxy) / denom;
+ a1 = (n*sumxy-sumx*sumy) / denom;
+ printf("y = %fx + %f",a1, a0);
+}
+
+PAGE RANK:
+
+			# A B C D	
+input_graph=[[0,1,1,0], #A
+			 [0,0,0,1], #B
+			 [1,1,0,1], #C
+			 [0,0,1,0]] #D
+
+def page_rank(graph):
+	page_rank=[]
+	return_value=[]
+	for i in range(len(graph)):
+		page_rank.append((1/float(len(graph))))
+	for i in range(0,2):
+		pre_page_rank=page_rank[:]
+		for j in range(len(graph)):
+			pagerankj=0.0
+			for k in range(len(graph)):
+				if graph[k][j]==1:
+					count=0
+					for l in range(len(graph[k])):
+						if graph[k][l]==1:
+							count=count+1
+					pagerankj=pagerankj+pre_page_rank[k]/float(count)
+			page_rank[j]=pagerankj
+	for i in range(len(page_rank)):
+		return_value.append([page_rank[i],i])
+	return_value.sort(key=lambda x: x[0])
+	final_page_rank=[]
+	for i in range(len(return_value)):
+		final_page_rank.append([return_value[i][1],i])
+	return final_page_rank
+
+print(page_rank(input_graph))
+
+
+DECISION TREE:
+
+import math
+
+class Node :
+	def __init__(self,pname=None,data=None,next_node=[]) :
+		self.pname=pname
+		self.data=data	
+		self.next_node=next_node
+	
+	def printf(self):
+		print (self.pname)
+		print (self.data)
+		for i in range(len(self.next_node)):
+			print (self.next_node[i])
+	def setNextNode(self,val):
+		self.next_node=val
+
+
+	
+HEAD=Node(None,None,None)
+head=HEAD
+listcat=['age','competition','type','profit','abc']
+
+# datalist=[['Sunny','Hot','High','Weak',0],
+# 		  ['Sunny','Hot','High','Strong',0],
+# 		  ['Overcast','Hot','High','Weak',1],
+# 		  ['Rain','Mild','High','Weak',1],
+# 		  ['Rain','Cool','Normal','Weak',1],
+# 		  ['Rain','Cool','Normal','Strong',0],
+# 		  ['Overcast','Cool','Normal','Strong',1],
+# 		  ['Sunny','Mild','High','Weak',0],
+# 		  ['Sunny','Cool','Normal','Weak',1],
+# 		  ['Rain','Mild','Normal','Weak',1],
+# 		  ['Sunny','Mild','Normal','Strong',1],
+# 		  ['Overcast','Mild','High','Strong',1],
+# 		  ['Overcast','Hot','Normal','Weak',1],
+# 		  ['Rain','Mild','High','Strong',0]]
+datalist=[['old', 'yes' ,'software',0],
+	   ['old', 'no' ,'software',0],
+	   ['old', 'no' ,'hardware',0],
+	   ['mid', 'yes' ,'software',0],
+	   ['mid', 'yes' ,'hardware',0],
+	   ['mid', 'no' ,'hardware',1],
+	   ['mid', 'no' ,'software',1],
+	   ['new', 'yes' ,'software',1],
+	   ['new', 'no' ,'hardware',1],
+	   ['new', 'no' ,'software',1]]
+
+def predict(array,start):
+	for i in range(0,len(array)):
+		for j in range(len(start.next_node)):
+			if start.next_node[j].data==array[i]:
+				start=start.next_node[j]
+				for k in range(len(start.next_node)):
+					if start.next_node[k].data=='0':
+						return 0
+					elif start.next_node[k].data=='1':
+						return 1
+				break
+
+def printTree(start):
+	if start.next_node==None:
+		return
+	else:
+		for j in range(len(start.next_node)):
+			print(start.next_node[j].data)
+			printTree(start.next_node[j])
+
+def maximum(array):
+	# print(array)
+	if len(array)>1:
+		tdata=array[0][1]
+		pos=array[0][0]
+		min=array[0][2]
+		for i in range(1,len(array)):
+			#print(array[i][2])
+			if array[i][2]>min:
+				min=array[i][2]
+				tdata=array[i][1]
+				pos=array[i][0]
+		# print [pos,tdata,min]
+		return [pos,tdata,min]
+	else:
+		return array[0]
+#adds string to tree
+def addNode(start,string,list1,colNo):
+	#starting of tree
+	if start.next_node==None and start==head:
+		start.data=string
+		node_list=[]
+		for i in range(len(getSubArgs(list1,colNo))):
+			node_list.append(Node(string,getSubArgs(list1,colNo)[i],None))
+		start.setNextNode(node_list)
+	#if the prenet node is matched
+	elif start.data==string:
+		node_list=[]
+		for i in range(len(getSubArgs(list1,colNo))):
+			node_list.append(Node(string,str(getSubArgs(list1,colNo)[i]),None))
+		start.setNextNode(node_list)
+	#if we reach the root node but Still couldnot match the string
+	elif start.next_node==None:
+		return
+	#here string does not match to a node so we transverse though the child node tree
+	else:
+		for i in range(len(start.next_node)):
+			addNode(start.next_node[i],string,list1,colNo)
+
+
+#helps to get sub-attribute
+def getSubArgs(listdata,column):
+	temp=[]
+	check=0
+	for i in range(len(listdata)):
+		check=0
+		if i==0:
+			temp.append(listdata[i][column])
+		for j in range(len(temp)):
+			if temp[j]==listdata[i][column] :
+				check=1
+		if check==0:
+			temp.append(listdata[i][column])
+	return temp
+#calculates entropy
+def entropy(p,n):
+	if p==0 or n==0 :
+		return 0.0
+	else:
+		total=float(p+n)
+		ptemp=float(p/total)
+		ntemp=float(n/total)
+		logp=float(ptemp*math.log(ptemp,2))
+		logn=float(ntemp*math.log(ntemp,2))
+		return float(-logp-logn)
+
+#def starts
+def desisonTree(list1,string):
+	#initializing gain list and travelling through each columns
+	gain=[]
+	for i in range(0,len(list1[0])-1):
+		p=0
+		n=0
+		I=0
+		E=0
+		pin=0
+		nin=0
+		G=0
+		#for each column we find entropy of all rows
+		for j in range(len(list1)):
+			# print(list1[j][len(list1[0])-1])
+			if list1[j][len(list1[0])-1]==1:
+				p=p+1
+			else: 
+				n=n+1
+		I=entropy(p,n)
+		# finding entropy of each sub-attritute eg. age=old,new and adding it
+		for k in range(len(getSubArgs(list1,i))):
+			pin=0
+			nin=0
+			for l in range(len(list1)):
+				if list1[l][i]==getSubArgs(list1,i)[k] and list1[l][len(list1[0])-1]==1:
+					pin+=1
+				elif list1[l][i]==getSubArgs(list1,i)[k] and list1[l][len(list1[0])-1]==0:
+					nin+=1
+			E=E+float(float(pin+nin)/float(p+n))*entropy(pin,nin)
+		#calculating gain
+		G=float(I)-float(E)
+		gain.append((i,listcat[i],G))
+	# if maximum gain is 0 that means that 
+	#it is either completly true or false so directly adding it
+	if maximum(gain)[2]==0.0:
+		addNode(head,string,list1,len(list1[0])-1)
+	else:
+	# adding maximum gain to tree	
+		addNode(head,string,list1,maximum(gain)[0])
+
+	# creating sub list to feed in recursion	
+		for i in range(len(getSubArgs(list1,maximum(gain)[0]))):
+			newlist=[]
+			for x in range(len(list1)):
+				if list1[x][maximum(gain)[0]]==getSubArgs(list1,maximum(gain)[0])[i]:
+					row=[]
+					for y in range(1,len(list1[x])):
+						row.append(list1[x][y])
+					newlist.append(row)
+	#calling recurrion
+			# print("recall")
+			desisonTree(newlist,getSubArgs(list1,maximum(gain)[0])[i])
+
+
+
+desisonTree(datalist,None)
+# printTree(head)
+print("prediction is that "+str(predict(['new', 'no' ,'software'],head)))
+# print(head.next_node[2].next_node[0].data)
+
+APRIORI:
+
+
+support=3
+confidence=5
+# list_elements =[] list_search_from=[]
+def search(list_elements,list_search_from):
+	temp=0
+	for i in range(len(list_elements)):
+		if list_elements[i] in list_search_from:
+			temp=temp+1
+	if temp==len(list_elements):
+		return 1
+	else:
+		return 0
+
+def uniquedata(data_list):
+	unique_data_items=[]
+	for i in range(len(data_list)):
+		for j in range(len(data_list[i])):
+			if data_list[i][j] not in unique_data_items:
+				unique_data_items.append(data_list[i][j])
+
+	return unique_data_items
+def combinations(C,K):
+ 	newC=[]
+ 	for i in range(len(C)):
+ 		for j in range(i+1,len(C)):
+ 			no_common_elements=0
+ 			for k in range(len(C[i])):
+ 				if search(C[i][k],C[j])==1:
+ 					no_common_elements=no_common_elements+1
+ 			if no_common_elements==K-1 :
+ 				validate=1
+ 				for m in range(len(newC)):
+ 					if search(uniquedata([C[i],C[j]]),newC[m])==1:
+ 						validate=0
+ 				if validate==1:
+ 					newC.append(uniquedata([C[i],C[j]]))
+ 	#print newC
+ 	return newC
+def getSupport(Ci,transctions):
+	count=0
+	for j in range(len(transctions)):
+		if search(Ci,transctions[j])==1:
+			count=count+1;
+	return count;
+
+# combinations([["a","b","d"],["a","c","d"],["b","c","a"],["c","d","a"]],3)
+def frequency(C,transctions,K):
+	L=[]
+	while True:
+		Lpre=L
+		L=[]	
+		for i in range(len(C)):
+			if getSupport(C[i],transctions)>=support:
+				L.append([getSupport(C[i],transctions),C[i]])	
+		K=+1
+		l=[]
+		for j in range(len(L)):
+			l.append(L[j][1]) 
+		C=combinations(l,K)
+		if L==[]:
+			return Lpre
+
+
+print(frequency(["a","b","c"],[["a","b"],["a","b","c"],["a","b"],["a"],["a","c"],["b","c"],["b"]],1))
+
+HITS:
+
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+void main()
+{
+ int n,i,j,a,k,it,t;
+ float sum,sum1,s,s1;
+ printf("Enter no. of nodes");
+ scanf("%d",&n);
+ float ip[n][n], in[n], op[n], ipt[n][n],mult[n][n],mult1[n][n], iden[4][1]={1,1,1,1};
+ printf("Enter 1 if there exist a node between two pages\n");
+ for(i=0;i<n;i++)
+ {
+  a=65;
+  for(j=0;j<n;j++)
+  {
+   printf("%c -> %c: ",a+i,a+j);
+   scanf("%f",&ip[i][j]);
+  }
+ }
+ printf("The input makes the matrix:\n");
+ printf("\t");
+ for(k=0;k<n;k++)
+ {
+   a=65;
+  printf("%c\t",a+k);
+ }
+ for(i=0;i<n;i++)
+ {
+  a=65;
+  printf("\n%c",a+i);
+  for(j=0;j<n;j++)
+  {
+   printf("\t%.2f",ip[i][j]);
+  }
+ }
+ for(i=0;i<n;i++)
+ {
+  for(j=0;j<n;j++)
+  {
+   ipt[i][j]=ip[j][i];
+  }
+ }
+ printf("Enter the number of iterations: \n");
+ scanf("%d",&it);
+ while(k<=it)
+ {
+  for(i=0;i<n;i++)
+  {
+   in[i]=0;
+   op[i]=0;
+   for(j=0;j<n;j++)
+   {
+    if(ip[i][j]==1)
+    {
+     op[i]++;
+    }
+    if(ip[j][i]==1)
+    {
+     in[i]++;
+    }
+   }
+  }
+  k++;
+  for(i=0;i<n;i++)
+  {
+   for(j=0;j<1;j++)
+   {
+    for(t=0;t<n;t++)
+    {
+     sum=sum+ip[i][t]*iden[t][j];
+    }
+    mult[i][j]=sum;
+    sum=0;
+   }
+  }//V
+  for(i=0;i<n;i++)
+  {
+   for(j=0;j<1;j++)
+   {
+    for(t=0;t<n;t++)
+    {
+     sum1=sum1+ip[i][t]*mult[t][j];
+    }
+    mult1[i][j]=sum1;
+    sum1=0;
+   }
+  }//U
+  for(i=0;i<n;i++)
+  {
+   for(j=0;j<1;j++)
+   {
+    s=s+(mult[i][j]*mult[i][j]);
+    s1=s1+(mult1[i][j]*mult1[i][j]);
+   }
+  }
+  printf("\n New Hub: ");
+  for(i=0;i<n;i++)
+  {
+   for(j=0;j<1;j++)
+   {
+    mult[i][j]=mult[i][j]/sqrt(s);
+    printf("\n %c= %.2f",65+i,mult[i][j]);
+   }
+  }
+  printf("\n New Authority: ");
+  for(i=0;i<n;i++)
+  {
+   for(j=0;j<1;j++)
+   {
+    mult1[i][j]=mult1[i][j]/sqrt(s1);
+    printf("\n %c= %.2f",65+i,mult1[i][j]);
+   }
+  }  
+ }//while
+}
+ 
+
